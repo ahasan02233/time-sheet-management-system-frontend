@@ -30,7 +30,36 @@ function LoginPage() {
                 loginData
             );
 
+            localStorage.setItem(
+                "employeeName",
+                response.data.employeeName
+            );
+
+            localStorage.setItem(
+                "email",
+                response.data.email
+            );
+
+            localStorage.setItem(
+                "role",
+                response.data.role
+            );
+
+            localStorage.setItem(
+                "token",
+                response.data.token
+            );
+
             alert(response.data.message);
+
+            if (response.data.role === "MANAGER") {
+
+                navigate("/manager-dashboard");
+
+            } else {
+
+                navigate("/employee-dashboard");
+            }
 
         } catch (error) {
 
@@ -41,14 +70,10 @@ function LoginPage() {
     };
 
     return (
+        <div>
+            <h2>Employee Login</h2>
 
-        <div style={styles.container}>
-
-            <form style={styles.form} onSubmit={handleSubmit}>
-
-                <h2 style={styles.heading}>
-                    Employee Login
-                </h2>
+            <form onSubmit={handleSubmit}>
 
                 <input
                     type="email"
@@ -56,7 +81,6 @@ function LoginPage() {
                     placeholder="Email"
                     value={loginData.email}
                     onChange={handleChange}
-                    style={styles.input}
                 />
 
                 <input
@@ -65,83 +89,15 @@ function LoginPage() {
                     placeholder="Password"
                     value={loginData.password}
                     onChange={handleChange}
-                    style={styles.input}
                 />
 
-                <button type="submit" style={styles.loginButton}>
+                <button type="submit">
                     Login
                 </button>
 
-                <p style={styles.text}>
-                    New User?
-                </p>
-
-                <button
-                    type="button"
-                    style={styles.registerButton}
-                    onClick={() => navigate("/register")}
-                >
-                    Go To Register
-                </button>
-
             </form>
-
         </div>
     );
 }
-
-const styles = {
-
-    container: {
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-        backgroundColor: "#f4f4f4"
-    },
-
-    form: {
-        backgroundColor: "white",
-        padding: "30px",
-        borderRadius: "10px",
-        width: "350px",
-        display: "flex",
-        flexDirection: "column",
-        gap: "15px",
-        boxShadow: "0px 0px 10px rgba(0,0,0,0.2)"
-    },
-
-    heading: {
-        textAlign: "center"
-    },
-
-    input: {
-        padding: "10px",
-        fontSize: "16px"
-    },
-
-    loginButton: {
-        padding: "10px",
-        backgroundColor: "green",
-        color: "white",
-        border: "none",
-        cursor: "pointer",
-        fontSize: "16px"
-    },
-
-    registerButton: {
-        padding: "10px",
-        backgroundColor: "blue",
-        color: "white",
-        border: "none",
-        cursor: "pointer",
-        fontSize: "16px"
-    },
-
-    text: {
-        textAlign: "center",
-        margin: "0"
-    }
-};
 
 export default LoginPage;

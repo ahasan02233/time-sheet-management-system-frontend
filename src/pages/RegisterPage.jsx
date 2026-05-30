@@ -1,3 +1,5 @@
+// src/pages/RegisterPage.jsx
+
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -11,7 +13,7 @@ function RegisterPage() {
         lastName: "",
         email: "",
         password: "",
-        role: "USER"
+        role: "EMPLOYEE"
     });
 
     const handleChange = (e) => {
@@ -40,7 +42,7 @@ function RegisterPage() {
                 lastName: "",
                 email: "",
                 password: "",
-                role: "USER"
+                role: "EMPLOYEE"
             });
 
             navigate("/login");
@@ -98,6 +100,23 @@ function RegisterPage() {
                     onChange={handleChange}
                     style={styles.input}
                 />
+
+                <select
+                    name="role"
+                    value={employee.role}
+                    onChange={handleChange}
+                    style={styles.input}
+                >
+
+                    <option value="EMPLOYEE">
+                        Employee
+                    </option>
+
+                    <option value="MANAGER">
+                        Manager
+                    </option>
+
+                </select>
 
                 <button type="submit" style={styles.registerButton}>
                     Register
