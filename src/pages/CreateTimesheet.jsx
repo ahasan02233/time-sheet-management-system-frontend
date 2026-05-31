@@ -1,31 +1,37 @@
-// src/pages/CreateTimesheet.jsx
-
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 function CreateTimesheet() {
 
     const navigate = useNavigate();
 
+    const [selectedDate, setSelectedDate] = useState(null);
+
     const [timesheet, setTimesheet] = useState({
-
         email: localStorage.getItem("email"),
-
         workDate: "",
-
         hoursWorked: "",
-
         taskDescription: ""
     });
 
     const handleChange = (e) => {
 
         setTimesheet({
-
             ...timesheet,
-
             [e.target.name]: e.target.value
+        });
+    };
+
+    const handleDateChange = (date) => {
+
+        setSelectedDate(date);
+
+        setTimesheet({
+            ...timesheet,
+            workDate: date.toISOString().split("T")[0]
         });
     };
 
@@ -34,24 +40,13 @@ function CreateTimesheet() {
         try {
 
             await axios.post(
-
                 "http://localhost:8080/api/employees/timesheet/create",
-
                 timesheet
             );
 
             alert("Timesheet Submitted Successfully");
 
-            setTimesheet({
-
-                email: localStorage.getItem("email"),
-
-                workDate: "",
-
-                hoursWorked: "",
-
-                taskDescription: ""
-            });
+            navigate("/employee-dashboard");
 
         } catch (error) {
 
@@ -63,84 +58,84 @@ function CreateTimesheet() {
 
     return (
 
-        <div style={styles.container}>
+        <div style={styles.page}>
 
             <div style={styles.card}>
 
-                <h2>Create Timesheet</h2>
+                <div style={styles.header}>
 
-                <label>
-                    Work Date
-                </label>
+                    <div style={styles.iconBox}>
+                        📝
+                    </div>
 
-                <input
+                    <div>
+                        <h1 style={styles.heading}>
+                            CREATE TIMESHEET
+                        </h1>
 
-                    type="date"
+                        <p style={styles.subHeading}>
+                            Submit your daily work details
+                        </p>
+                    </div>
 
-                    name="workDate"
+                </div>
 
-                    value={timesheet.workDate}
+                <div style={styles.formSection}>
 
-                    onChange={handleChange}
+                    <label style={styles.label}>
+                        Work Date
+                    </label>
 
-                    style={styles.input}
-                />
+                    <DatePicker
+                        selected={selectedDate}
+                        onChange={handleDateChange}
+                        dateFormat="yyyy-MM-dd"
+                        placeholderText="Select Work Date"
+                        className="datePickerInput"
+                        maxDate={new Date()}
+                    />
 
-                <label>
-                    Hours Worked
-                </label>
+                    <label style={styles.label}>
+                        Hours Worked
+                    </label>
 
-                <input
+                    <input
+                        type="number"
+                        name="hoursWorked"
+                        placeholder="Enter Hours Worked"
+                        value={timesheet.hoursWorked}
+                        onChange={handleChange}
+                    />
 
-                    type="number"
+                    <label style={styles.label}>
+                        Task Description
+                    </label>
 
-                    name="hoursWorked"
+                    <textarea
+                        name="taskDescription"
+                        placeholder="Describe your work completed today..."
+                        value={timesheet.taskDescription}
+                        onChange={handleChange}
+                        style={styles.textarea}
+                    />
 
-                    placeholder="Enter Hours"
+                    <button
+                        style={styles.submitButton}
+                        onClick={submitTimesheet}
+                    >
+                        💾 SAVE TIMESHEET
+                    </button>
 
-                    value={timesheet.hoursWorked}
+                    <button
+                        style={styles.backButton}
+                        onClick={() =>
+                            navigate("/employee-dashboard")
+                        }
+                    >
+                        ← BACK TO DASHBOARD
+                    </button>
 
-                    onChange={handleChange}
-
-                    style={styles.input}
-                />
-
-                <label>
-                    Task Description
-                </label>
-
-                <textarea
-
-                    name="taskDescription"
-
-                    placeholder="Describe your work"
-
-                    value={timesheet.taskDescription}
-
-                    onChange={handleChange}
-
-                    style={styles.textarea}
-                />
-
-                <button
-
-                    style={styles.submitButton}
-
-                    onClick={submitTimesheet}
-                >
-                    Submit Timesheet
-                </button>
-
-                <button
-
-                    style={styles.backButton}
-
-                    onClick={() =>
-                        navigate("/employee-dashboard")
-                    }
-                >
-                    Back
-                </button>
+                </div>
 
             </div>
 
@@ -150,51 +145,162 @@ function CreateTimesheet() {
 
 const styles = {
 
-    container: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    minHeight: "100vh"
-},
+    page: {
+
+        minHeight: "100vh",
+
+        display: "flex",
+
+        justifyContent: "center",
+
+        alignItems: "center",
+
+        padding: "40px",
+
+        background:
+            "linear-gradient(135deg,#0f172a,#0f4cdb,#6d28d9)"
+    },
 
     card: {
-    backgroundColor: "white",
-    width: "550px",
-    padding: "40px",
-    borderRadius: "15px",
-    boxShadow: "0 8px 20px rgba(0,0,0,0.3)",
-    display: "flex",
-    flexDirection: "column",
-    gap: "10px"
-},
 
-    input: {
-        padding: "10px",
+        width: "850px",
+
+        backgroundColor: "white",
+
+        borderRadius: "25px",
+
+        overflow: "hidden",
+
+        boxShadow:
+            "0 15px 40px rgba(0,0,0,0.25)"
+    },
+
+    header: {
+
+        background:
+            "linear-gradient(135deg,#001f4d,#003b8e)",
+
+        color: "white",
+
+        padding: "35px",
+
+        display: "flex",
+
+        alignItems: "center",
+
+        gap: "20px"
+    },
+
+    iconBox: {
+
+        width: "80px",
+
+        height: "80px",
+
+        borderRadius: "50%",
+
+        background:
+            "rgba(255,255,255,0.15)",
+
+        display: "flex",
+
+        justifyContent: "center",
+
+        alignItems: "center",
+
+        fontSize: "38px"
+    },
+
+    heading: {
+
+        margin: 0,
+
+        fontSize: "38px",
+
+        fontWeight: "700"
+    },
+
+    subHeading: {
+
+        marginTop: "8px",
+
+        fontSize: "18px",
+
+        color: "#dbeafe"
+    },
+
+    formSection: {
+
+        padding: "35px"
+    },
+
+    label: {
+
+        display: "block",
+
+        marginBottom: "8px",
+
+        marginTop: "18px",
+
+        fontWeight: "600",
+
+        color: "#1e293b",
+
         fontSize: "16px"
     },
 
     textarea: {
-        minHeight: "120px",
-        padding: "10px",
-        fontSize: "16px"
+
+        minHeight: "170px",
+
+        resize: "none"
     },
 
     submitButton: {
-        padding: "12px",
-        backgroundColor: "green",
-        color: "white",
+
+        width: "100%",
+
+        marginTop: "30px",
+
+        padding: "15px",
+
         border: "none",
-        cursor: "pointer",
-        borderRadius: "5px"
+
+        borderRadius: "12px",
+
+        background:
+            "linear-gradient(90deg,#2563eb,#7c3aed)",
+
+        color: "white",
+
+        fontSize: "18px",
+
+        fontWeight: "600",
+
+        cursor: "pointer"
     },
 
     backButton: {
-        padding: "12px",
-        backgroundColor: "#1976d2",
-        color: "white",
-        border: "none",
-        cursor: "pointer",
-        borderRadius: "5px"
+
+        width: "100%",
+
+        marginTop: "15px",
+
+        padding: "15px",
+
+        border: "2px solid #2563eb",
+
+        borderRadius: "12px",
+
+        backgroundColor: "white",
+
+        color: "#2563eb",
+
+        fontSize: "18px",
+
+        fontWeight: "600",
+
+        cursor: "pointer"
     }
 };
 

@@ -1,10 +1,4 @@
-// src/pages/MyTimesheets.jsx
-
-import React, {
-    useEffect,
-    useState
-} from "react";
-
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -15,9 +9,7 @@ function MyTimesheets() {
     const [timesheets, setTimesheets] = useState([]);
 
     useEffect(() => {
-
         fetchTimesheets();
-
     }, []);
 
     const fetchTimesheets = async () => {
@@ -32,9 +24,7 @@ function MyTimesheets() {
 
             const response =
                 await axios.get(
-
                     `http://localhost:8080/api/employees/timesheet/my?email=${email}`,
-
                     {
                         headers: {
                             Authorization:
@@ -55,76 +45,142 @@ function MyTimesheets() {
 
     return (
 
-        <div style={styles.container}>
+        <div style={styles.page}>
 
-            <h1>
-                My Timesheets
-            </h1>
+            <div style={styles.header}>
 
-            <table style={styles.table}>
+                <h1 style={styles.title}>
+                    My Timesheets
+                </h1>
 
-                <thead>
+                <p style={styles.subtitle}>
+                    View all your submitted timesheets
+                </p>
 
-                <tr>
-                    <th>Date</th>
-                    <th>Hours</th>
-                    <th>Task Description</th>
-                    <th>Status</th>
-                    <th>Manager Comment</th>
-                </tr>
+            </div>
 
-                </thead>
+            <div style={styles.card}>
 
-                <tbody>
+                <div style={styles.cardHeader}>
 
-                {
-                    timesheets.length > 0 ?
+                    <h2>
+                        Timesheet Records
+                    </h2>
 
-                        timesheets.map((item) => (
+                    <div style={styles.recordCount}>
+                        Total Records : {timesheets.length}
+                    </div>
 
-                            <tr key={item.id}>
+                </div>
 
-                                <td>{item.workDate}</td>
+                <div style={styles.tableContainer}>
 
-                                <td>{item.hoursWorked}</td>
+                    <table style={styles.table}>
 
-                                <td>{item.taskDescription}</td>
-
-                                <td>{item.status}</td>
-
-                                <td>{item.managerComment}</td>
-
-                            </tr>
-
-                        ))
-
-                        :
+                        <thead>
 
                         <tr>
 
-                            <td colSpan="5">
-
-                                No Timesheets Found
-
-                            </td>
+                            <th style={styles.th}>Date</th>
+                            <th style={styles.th}>Hours</th>
+                            <th style={styles.th}>Task Description</th>
+                            <th style={styles.th}>Status</th>
+                            <th style={styles.th}>Manager Comment</th>
 
                         </tr>
-                }
 
-                </tbody>
+                        </thead>
 
-            </table>
+                        <tbody>
 
-            <br />
+                        {
 
-            <button
-                style={styles.button}
-                onClick={() =>
-                    navigate("/employee-dashboard")
-                }
-            >
-                Back To Dashboard
-            </button>
+                            timesheets.length > 0 ?
+
+                                timesheets.map((item) => (
+
+                                    <tr key={item.id}>
+
+                                        <td style={styles.td}>
+                                            {item.workDate}
+                                        </td>
+
+                                        <td style={styles.td}>
+                                            {item.hoursWorked}
+                                        </td>
+
+                                        <td style={styles.td}>
+                                            {item.taskDescription}
+                                        </td>
+
+                                        <td style={styles.td}>
+
+                                            <span
+                                                style={{
+                                                    ...styles.badge,
+
+                                                    backgroundColor:
+                                                        item.status === "APPROVED"
+                                                            ? "#d4edda"
+                                                            : item.status === "REJECTED"
+                                                            ? "#f8d7da"
+                                                            : "#fff3cd",
+
+                                                    color:
+                                                        item.status === "APPROVED"
+                                                            ? "#155724"
+                                                            : item.status === "REJECTED"
+                                                            ? "#721c24"
+                                                            : "#856404"
+                                                }}
+                                            >
+                                                {item.status}
+                                            </span>
+
+                                        </td>
+
+                                        <td style={styles.td}>
+                                            {item.managerComment}
+                                        </td>
+
+                                    </tr>
+
+                                ))
+
+                                :
+
+                                <tr>
+
+                                    <td
+                                        style={styles.noData}
+                                        colSpan="5"
+                                    >
+                                        No Timesheets Found
+                                    </td>
+
+                                </tr>
+                        }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <div style={styles.buttonSection}>
+
+                    <button
+                        style={styles.button}
+                        onClick={() =>
+                            navigate("/employee-dashboard")
+                        }
+                    >
+                        Back To Dashboard
+                    </button>
+
+                </div>
+
+            </div>
 
         </div>
     );
@@ -132,25 +188,148 @@ function MyTimesheets() {
 
 const styles = {
 
-    container: {
-    padding: "30px",
-    backgroundColor: "white",
-    margin: "30px",
-    borderRadius: "15px"
-},
+    page: {
+
+        minHeight: "100vh",
+
+        background:
+            "linear-gradient(135deg,#0f4cdb,#5a3fff,#8f3bff)",
+
+        padding: "40px"
+    },
+
+    header: {
+
+        color: "white",
+
+        marginBottom: "30px"
+    },
+
+    title: {
+
+        fontSize: "48px",
+
+        fontWeight: "bold"
+    },
+
+    subtitle: {
+
+        fontSize: "18px",
+
+        marginTop: "10px"
+    },
+
+    card: {
+
+        backgroundColor: "white",
+
+        borderRadius: "20px",
+
+        padding: "30px",
+
+        boxShadow:
+            "0px 10px 30px rgba(0,0,0,0.2)"
+    },
+
+    cardHeader: {
+
+        display: "flex",
+
+        justifyContent: "space-between",
+
+        alignItems: "center",
+
+        marginBottom: "25px"
+    },
+
+    recordCount: {
+
+        backgroundColor: "#eef4ff",
+
+        padding: "10px 20px",
+
+        borderRadius: "10px",
+
+        fontWeight: "bold"
+    },
+
+    tableContainer: {
+
+        overflowX: "auto"
+    },
 
     table: {
+
         width: "100%",
-        borderCollapse: "collapse"
+
+        borderCollapse: "collapse",
+
+        tableLayout: "fixed"
+    },
+
+    th: {
+
+        padding: "18px",
+
+        textAlign: "center",
+
+        backgroundColor: "#eef4ff",
+
+        color: "#1e293b",
+
+        fontWeight: "bold"
+    },
+
+    td: {
+
+        padding: "18px",
+
+        textAlign: "center",
+
+        borderBottom: "1px solid #e5e7eb"
+    },
+
+    badge: {
+
+        padding: "8px 16px",
+
+        borderRadius: "20px",
+
+        fontWeight: "bold"
+    },
+
+    noData: {
+
+        padding: "25px",
+
+        textAlign: "center"
+    },
+
+    buttonSection: {
+
+        textAlign: "center",
+
+        marginTop: "30px"
     },
 
     button: {
-        padding: "12px",
-        backgroundColor: "#1976d2",
+
+        background:
+            "linear-gradient(90deg,#0f4cdb,#6a11cb)",
+
         color: "white",
+
         border: "none",
+
+        padding: "15px 40px",
+
+        borderRadius: "10px",
+
         cursor: "pointer",
-        borderRadius: "5px"
+
+        fontSize: "16px",
+
+        fontWeight: "bold"
     }
 };
 
