@@ -1,5 +1,3 @@
-// src/pages/EmployeeDashboard.jsx
-
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -21,11 +19,15 @@ function EmployeeDashboard() {
 
         <div style={styles.container}>
 
-            <h1>
-                Welcome {employeeName}
-            </h1>
-
             <div style={styles.card}>
+
+                <h1>
+                    Welcome, {employeeName}
+                </h1>
+
+                <p>
+                    Employee Portal
+                </p>
 
                 <button
                     style={styles.button}
@@ -42,11 +44,11 @@ function EmployeeDashboard() {
                         navigate("/my-timesheets")
                     }
                 >
-                    View My Timesheets
+                    View Timesheets
                 </button>
 
                 <button
-                    style={styles.logoutButton}
+                    style={styles.logout}
                     onClick={logout}
                 >
                     Logout
@@ -62,36 +64,42 @@ const styles = {
 
     container: {
         display: "flex",
-        flexDirection: "column",
+        justifyContent: "center",
         alignItems: "center",
-        marginTop: "80px"
+        height: "100vh"
     },
 
     card: {
-        display: "flex",
-        flexDirection: "column",
-        gap: "15px",
-        width: "300px"
+        backgroundColor: "white",
+        width: "450px",
+        padding: "40px",
+        borderRadius: "15px",
+        textAlign: "center",
+        boxShadow: "0 8px 20px rgba(0,0,0,0.3)"
     },
 
     button: {
-        padding: "12px",
-        fontSize: "16px",
+        width: "100%",
+        padding: "14px",
+        marginTop: "15px",
         border: "none",
+        borderRadius: "8px",
         backgroundColor: "#1976d2",
         color: "white",
-        cursor: "pointer",
-        borderRadius: "5px"
+        fontSize: "16px",
+        cursor: "pointer"
     },
 
-    logoutButton: {
-        padding: "12px",
-        fontSize: "16px",
+    logout: {
+        width: "100%",
+        padding: "14px",
+        marginTop: "15px",
         border: "none",
-        backgroundColor: "red",
+        borderRadius: "8px",
+        backgroundColor: "#d32f2f",
         color: "white",
-        cursor: "pointer",
-        borderRadius: "5px"
+        fontSize: "16px",
+        cursor: "pointer"
     }
 };
 

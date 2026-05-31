@@ -133,8 +133,11 @@ function MyTimesheets() {
 const styles = {
 
     container: {
-        padding: "30px"
-    },
+    padding: "30px",
+    backgroundColor: "white",
+    margin: "30px",
+    borderRadius: "15px"
+},
 
     table: {
         width: "100%",

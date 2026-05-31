@@ -209,8 +209,9 @@ function ManagerDashboard() {
 const styles = {
 
     container: {
-        padding: "30px"
-    },
+    padding: "30px",
+    minHeight: "100vh"
+},
 
     card: {
         border: "1px solid lightgray",

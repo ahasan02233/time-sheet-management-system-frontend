@@ -151,20 +151,22 @@ function CreateTimesheet() {
 const styles = {
 
     container: {
-        display: "flex",
-        justifyContent: "center",
-        marginTop: "50px"
-    },
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    minHeight: "100vh"
+},
 
     card: {
-        width: "500px",
-        padding: "30px",
-        boxShadow: "0px 0px 10px lightgray",
-        borderRadius: "10px",
-        display: "flex",
-        flexDirection: "column",
-        gap: "10px"
-    },
+    backgroundColor: "white",
+    width: "550px",
+    padding: "40px",
+    borderRadius: "15px",
+    boxShadow: "0 8px 20px rgba(0,0,0,0.3)",
+    display: "flex",
+    flexDirection: "column",
+    gap: "10px"
+},
 
     input: {
         padding: "10px",
