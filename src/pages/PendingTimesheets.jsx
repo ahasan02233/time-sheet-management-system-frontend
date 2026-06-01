@@ -8,6 +8,12 @@ function PendingTimesheets() {
 
     const [timesheets, setTimesheets] = useState([]);
 
+    const [showModal, setShowModal] = useState(false);
+
+    const [selectedId, setSelectedId] = useState(null);
+
+    const [actionType, setActionType] = useState("");
+
     const [comment, setComment] = useState("");
 
     useEffect(() => {
@@ -42,43 +48,31 @@ function PendingTimesheets() {
         }
     };
 
-    const approveTimesheet = async (id) => {
+    const openModal = (id, action) => {
 
-        try {
+        setSelectedId(id);
 
-            const token =
-                localStorage.getItem("token");
+        setActionType(action);
 
-            await axios.put(
-                `http://localhost:8080/manager/approve/${id}`,
-                {
-                    comment
-                },
-                {
-                    headers: {
-                        Authorization:
-                            `Bearer ${token}`
-                    }
-                }
-            );
+        setComment("");
 
-            fetchPendingTimesheets();
-
-        } catch (error) {
-
-            console.log(error);
-        }
+        setShowModal(true);
     };
 
-    const rejectTimesheet = async (id) => {
+    const submitAction = async () => {
 
         try {
 
             const token =
                 localStorage.getItem("token");
 
+            const url =
+                actionType === "APPROVE"
+                    ? `http://localhost:8080/manager/approve/${selectedId}`
+                    : `http://localhost:8080/manager/reject/${selectedId}`;
+
             await axios.put(
-                `http://localhost:8080/manager/reject/${id}`,
+                url,
                 {
                     comment
                 },
@@ -90,11 +84,21 @@ function PendingTimesheets() {
                 }
             );
 
+            alert(
+                actionType === "APPROVE"
+                    ? "Timesheet Approved Successfully"
+                    : "Timesheet Rejected Successfully"
+            );
+
+            setShowModal(false);
+
             fetchPendingTimesheets();
 
         } catch (error) {
 
             console.log(error);
+
+            alert("Operation Failed");
         }
     };
 
@@ -102,86 +106,233 @@ function PendingTimesheets() {
 
         <div style={styles.page}>
 
-            <h1>
-                Pending Timesheets
-            </h1>
+            <div style={styles.card}>
 
-            <input
-                type="text"
-                placeholder="Manager Comment"
-                value={comment}
-                onChange={(e) =>
-                    setComment(e.target.value)
-                }
-                style={styles.input}
-            />
+                <h1 style={styles.heading}>
+                    Pending Timesheets
+                </h1>
 
-            <table style={styles.table}>
+                <table style={styles.table}>
 
-                <thead>
+                    <thead>
 
-                <tr>
+                    <tr>
 
-                    <th>Name</th>
-                    <th>Date</th>
-                    <th>Hours</th>
-                    <th>Task</th>
-                    <th>Action</th>
+                        <th style={styles.th}>
+                            Employee
+                        </th>
 
-                </tr>
+                        <th style={styles.th}>
+                            Work Date
+                        </th>
 
-                </thead>
+                        <th style={styles.th}>
+                            Hours
+                        </th>
 
-                <tbody>
+                        <th style={styles.th}>
+                            Task Description
+                        </th>
 
-                {
-                    timesheets.map((item) => (
+                        <th style={styles.th}>
+                            Action
+                        </th>
 
-                        <tr key={item.id}>
+                    </tr>
 
-                            <td>{item.employeeName}</td>
-                            <td>{item.workDate}</td>
-                            <td>{item.hoursWorked}</td>
-                            <td>{item.taskDescription}</td>
+                    </thead>
 
-                            <td>
+                    <tbody>
+
+                    {
+
+                        timesheets.length > 0 ?
+
+                            timesheets.map((item) => (
+
+                                <tr
+                                    key={item.id}
+                                    style={styles.row}
+                                >
+
+                                    <td style={styles.td}>
+                                        {item.employeeName}
+                                    </td>
+
+                                    <td style={styles.td}>
+                                        {item.workDate}
+                                    </td>
+
+                                    <td style={styles.td}>
+                                        {item.hoursWorked}
+                                    </td>
+
+                                    <td style={styles.td}>
+                                        {item.taskDescription}
+                                    </td>
+
+                                    <td style={styles.td}>
+
+                                        <button
+                                            style={styles.approveButton}
+                                            onClick={() =>
+                                                openModal(
+                                                    item.id,
+                                                    "APPROVE"
+                                                )
+                                            }
+                                        >
+                                            Approve
+                                        </button>
+
+                                        <button
+                                            style={styles.rejectButton}
+                                            onClick={() =>
+                                                openModal(
+                                                    item.id,
+                                                    "REJECT"
+                                                )
+                                            }
+                                        >
+                                            Reject
+                                        </button>
+
+                                    </td>
+
+                                </tr>
+
+                            ))
+
+                            :
+
+                            <tr>
+
+                                <td
+                                    colSpan="5"
+                                    style={{
+                                        textAlign:
+                                            "center",
+                                        padding:
+                                            "25px"
+                                    }}
+                                >
+                                    No Pending Timesheets
+                                </td>
+
+                            </tr>
+                    }
+
+                    </tbody>
+
+                </table>
+
+                <button
+                    style={styles.backButton}
+                    onClick={() =>
+                        navigate(
+                            "/manager-dashboard"
+                        )
+                    }
+                >
+                    Back To Dashboard
+                </button>
+
+            </div>
+
+            {
+
+                showModal && (
+
+                    <div
+                        style={
+                            styles.modalOverlay
+                        }
+                    >
+
+                        <div
+                            style={
+                                styles.modal
+                            }
+                        >
+
+                            <h2>
+
+                                {
+
+                                    actionType ===
+                                    "APPROVE"
+
+                                        ?
+
+                                        "Approve Timesheet"
+
+                                        :
+
+                                        "Reject Timesheet"
+                                }
+
+                            </h2>
+
+                            <textarea
+                                placeholder="Enter Manager Comment"
+                                value={comment}
+                                onChange={(e) =>
+                                    setComment(
+                                        e.target.value
+                                    )
+                                }
+                                style={
+                                    styles.textarea
+                                }
+                            />
+
+                            <div
+                                style={
+                                    styles.modalButtons
+                                }
+                            >
 
                                 <button
-                                    style={styles.approve}
+                                    style={
+                                        styles.cancelBtn
+                                    }
                                     onClick={() =>
-                                        approveTimesheet(item.id)
+                                        setShowModal(
+                                            false
+                                        )
                                     }
                                 >
-                                    Approve
+                                    Cancel
                                 </button>
 
                                 <button
-                                    style={styles.reject}
-                                    onClick={() =>
-                                        rejectTimesheet(item.id)
+                                    style={
+                                        actionType ===
+                                        "APPROVE"
+
+                                            ?
+
+                                            styles.approveButton
+
+                                            :
+
+                                            styles.rejectButton
+                                    }
+                                    onClick={
+                                        submitAction
                                     }
                                 >
-                                    Reject
+                                    Submit
                                 </button>
 
-                            </td>
+                            </div>
 
-                        </tr>
-                    ))
-                }
+                        </div>
 
-                </tbody>
+                    </div>
 
-            </table>
-
-            <button
-                style={styles.back}
-                onClick={() =>
-                    navigate("/manager-dashboard")
-                }
-            >
-                Back
-            </button>
+                )
+            }
 
         </div>
     );
@@ -190,38 +341,191 @@ function PendingTimesheets() {
 const styles = {
 
     page: {
+
+        minHeight: "100vh",
+
+        background:
+            "linear-gradient(135deg,#0f4cdb,#5a3fff,#8f3bff)",
+
         padding: "30px"
     },
 
-    input: {
-        width: "100%",
-        padding: "12px",
-        marginBottom: "20px"
+    card: {
+
+        background:
+            "rgba(255,255,255,0.97)",
+
+        borderRadius: "25px",
+
+        padding: "30px",
+
+        boxShadow:
+            "0 15px 35px rgba(0,0,0,0.15)"
+    },
+
+    heading: {
+
+        fontSize: "38px",
+
+        fontWeight: "700",
+
+        color: "#1e293b",
+
+        marginBottom: "25px"
     },
 
     table: {
+
         width: "100%",
+
         borderCollapse: "collapse"
     },
 
-    approve: {
-        marginRight: "10px",
-        padding: "8px 15px",
-        background: "green",
+    th: {
+
+        background:
+            "linear-gradient(90deg,#2563eb,#7c3aed)",
+
         color: "white",
-        border: "none"
+
+        padding: "16px",
+
+        textAlign: "center"
     },
 
-    reject: {
-        padding: "8px 15px",
-        background: "red",
-        color: "white",
-        border: "none"
+    td: {
+
+        padding: "16px",
+
+        textAlign: "center",
+
+        borderBottom:
+            "1px solid #e5e7eb"
     },
 
-    back: {
-        marginTop: "20px",
-        padding: "12px 20px"
+    row: {
+
+        backgroundColor: "white"
+    },
+
+    approveButton: {
+
+        background: "#16a34a",
+
+        color: "white",
+
+        border: "none",
+
+        padding: "10px 15px",
+
+        borderRadius: "8px",
+
+        cursor: "pointer",
+
+        marginRight: "10px"
+    },
+
+    rejectButton: {
+
+        background: "#dc2626",
+
+        color: "white",
+
+        border: "none",
+
+        padding: "10px 15px",
+
+        borderRadius: "8px",
+
+        cursor: "pointer"
+    },
+
+    backButton: {
+
+        marginTop: "25px",
+
+        padding: "14px 30px",
+
+        border: "none",
+
+        borderRadius: "10px",
+
+        background:
+            "linear-gradient(90deg,#2563eb,#7c3aed)",
+
+        color: "white",
+
+        fontSize: "16px",
+
+        cursor: "pointer"
+    },
+
+    modalOverlay: {
+
+        position: "fixed",
+
+        top: 0,
+
+        left: 0,
+
+        width: "100%",
+
+        height: "100%",
+
+        background:
+            "rgba(0,0,0,0.5)",
+
+        display: "flex",
+
+        justifyContent: "center",
+
+        alignItems: "center"
+    },
+
+    modal: {
+
+        width: "450px",
+
+        background: "white",
+
+        borderRadius: "15px",
+
+        padding: "25px"
+    },
+
+    textarea: {
+
+        width: "100%",
+
+        height: "120px",
+
+        padding: "10px",
+
+        marginTop: "15px",
+
+        marginBottom: "15px",
+
+        boxSizing: "border-box"
+    },
+
+    modalButtons: {
+
+        display: "flex",
+
+        justifyContent: "flex-end",
+
+        gap: "10px"
+    },
+
+    cancelBtn: {
+
+        padding: "10px 15px",
+
+        border: "none",
+
+        borderRadius: "8px",
+
+        cursor: "pointer"
     }
 };
 

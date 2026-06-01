@@ -7,10 +7,17 @@ function PendingLeaves() {
     const navigate = useNavigate();
 
     const [leaves, setLeaves] = useState([]);
+
     const [showModal, setShowModal] = useState(false);
-    const [selectedLeaveId, setSelectedLeaveId] = useState(null);
-    const [actionType, setActionType] = useState("");
-    const [managerComment, setManagerComment] = useState("");
+
+    const [selectedLeaveId, setSelectedLeaveId] =
+        useState(null);
+
+    const [actionType, setActionType] =
+        useState("");
+
+    const [managerComment, setManagerComment] =
+        useState("");
 
     useEffect(() => {
         fetchLeaves();
@@ -20,31 +27,41 @@ function PendingLeaves() {
 
         try {
 
-            const token = localStorage.getItem("token");
+            const token =
+                localStorage.getItem("token");
 
-            const response = await axios.get(
-                "http://localhost:8080/manager/leave/pending",
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
+            const response =
+                await axios.get(
+                    "http://localhost:8080/manager/leave/pending",
+                    {
+                        headers: {
+                            Authorization:
+                                `Bearer ${token}`
+                        }
                     }
-                }
-            );
+                );
 
             setLeaves(response.data);
 
         } catch (error) {
 
             console.log(error);
+
             alert("Failed To Load Leaves");
         }
     };
 
-    const openModal = (leaveId, action) => {
+    const openModal = (
+        leaveId,
+        action
+    ) => {
 
         setSelectedLeaveId(leaveId);
+
         setActionType(action);
+
         setManagerComment("");
+
         setShowModal(true);
     };
 
@@ -52,7 +69,8 @@ function PendingLeaves() {
 
         try {
 
-            const token = localStorage.getItem("token");
+            const token =
+                localStorage.getItem("token");
 
             const url =
                 actionType === "APPROVE"
@@ -62,11 +80,12 @@ function PendingLeaves() {
             await axios.put(
                 url,
                 {
-                    managerComment: managerComment
+                    managerComment
                 },
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`
+                        Authorization:
+                            `Bearer ${token}`
                     }
                 }
             );
@@ -78,172 +97,259 @@ function PendingLeaves() {
             );
 
             setShowModal(false);
+
             fetchLeaves();
 
         } catch (error) {
 
             console.log(error);
+
             alert("Operation Failed");
         }
     };
 
     return (
+
         <div style={styles.page}>
 
-            <div style={styles.card}>
+            <div style={styles.container}>
 
                 <h1 style={styles.heading}>
                     Pending Leave Requests
                 </h1>
 
-                <table style={styles.table}>
+                <div style={styles.tableContainer}>
 
-                    <thead>
+                    <table style={styles.table}>
+
+                        <thead>
+
                         <tr>
-                            <th>Name</th>
-                            <th>From Date</th>
-                            <th>To Date</th>
-                            <th>Total Days</th>
-                            <th>Reason</th>
-                            <th>Action</th>
+
+                            <th style={styles.th}>
+                                Employee Name
+                            </th>
+
+                            <th style={styles.th}>
+                                From Date
+                            </th>
+
+                            <th style={styles.th}>
+                                To Date
+                            </th>
+
+                            <th style={styles.th}>
+                                Total Days
+                            </th>
+
+                            <th style={styles.th}>
+                                Reason
+                            </th>
+
+                            <th style={styles.th}>
+                                Action
+                            </th>
+
                         </tr>
-                    </thead>
 
-                    <tbody>
+                        </thead>
 
-                        {leaves.length > 0 ? (
+                        <tbody>
 
-                            leaves.map((leave) => (
+                        {
 
-                                <tr key={leave.id}>
+                            leaves.length > 0 ?
 
-                                    <td>{leave.employeeName}</td>
+                                leaves.map((leave) => (
 
-                                    <td>{leave.fromDate}</td>
+                                    <tr
+                                        key={leave.id}
+                                        style={styles.row}
+                                    >
 
-                                    <td>{leave.toDate}</td>
+                                        <td style={styles.td}>
+                                            {leave.employeeName}
+                                        </td>
 
-                                    <td>{leave.totalDays}</td>
+                                        <td style={styles.td}>
+                                            {leave.fromDate}
+                                        </td>
 
-                                    <td>{leave.reason}</td>
+                                        <td style={styles.td}>
+                                            {leave.toDate}
+                                        </td>
 
-                                    <td>
+                                        <td style={styles.td}>
+                                            {leave.totalDays}
+                                        </td>
 
-                                        <button
-                                            style={styles.approve}
-                                            onClick={() =>
-                                                openModal(
-                                                    leave.id,
-                                                    "APPROVE"
-                                                )
-                                            }
-                                        >
-                                            Approve
-                                        </button>
+                                        <td style={styles.td}>
+                                            {leave.reason}
+                                        </td>
 
-                                        <button
-                                            style={styles.reject}
-                                            onClick={() =>
-                                                openModal(
-                                                    leave.id,
-                                                    "REJECT"
-                                                )
-                                            }
-                                        >
-                                            Reject
-                                        </button>
+                                        <td style={styles.td}>
 
+                                            <button
+                                                style={
+                                                    styles.approveButton
+                                                }
+                                                onClick={() =>
+                                                    openModal(
+                                                        leave.id,
+                                                        "APPROVE"
+                                                    )
+                                                }
+                                            >
+                                                ✓ Approve
+                                            </button>
+
+                                            <button
+                                                style={
+                                                    styles.rejectButton
+                                                }
+                                                onClick={() =>
+                                                    openModal(
+                                                        leave.id,
+                                                        "REJECT"
+                                                    )
+                                                }
+                                            >
+                                                ✕ Reject
+                                            </button>
+
+                                        </td>
+
+                                    </tr>
+
+                                ))
+
+                                :
+
+                                <tr>
+
+                                    <td
+                                        colSpan="6"
+                                        style={styles.noData}
+                                    >
+                                        No Pending Leave Requests
                                     </td>
 
                                 </tr>
+                        }
 
-                            ))
+                        </tbody>
 
-                        ) : (
+                    </table>
 
-                            <tr>
-
-                                <td
-                                    colSpan="6"
-                                    style={{
-                                        textAlign: "center",
-                                        padding: "20px"
-                                    }}
-                                >
-                                    No Pending Leaves
-                                </td>
-
-                            </tr>
-
-                        )}
-
-                    </tbody>
-
-                </table>
+                </div>
 
                 <button
-                    style={styles.back}
+                    style={styles.backButton}
                     onClick={() =>
                         navigate("/manager-dashboard")
                     }
                 >
-                    Back To Dashboard
+                    ← Back To Dashboard
                 </button>
 
             </div>
 
-            {showModal && (
+            {
 
-                <div style={styles.modalOverlay}>
+                showModal && (
 
-                    <div style={styles.modal}>
+                    <div
+                        style={
+                            styles.modalOverlay
+                        }
+                    >
 
-                        <h2>
-                            {actionType === "APPROVE"
-                                ? "Approve Leave"
-                                : "Reject Leave"}
-                        </h2>
-
-                        <textarea
-                            style={styles.textarea}
-                            placeholder="Enter Manager Comment"
-                            value={managerComment}
-                            onChange={(e) =>
-                                setManagerComment(
-                                    e.target.value
-                                )
+                        <div
+                            style={
+                                styles.modal
                             }
-                        />
+                        >
 
-                        <div style={styles.modalButtons}>
-
-                            <button
-                                style={styles.cancelBtn}
-                                onClick={() =>
-                                    setShowModal(false)
-                                }
-                            >
-                                Cancel
-                            </button>
-
-                            <button
+                            <h2
                                 style={
-                                    actionType === "APPROVE"
-                                        ? styles.approve
-                                        : styles.reject
+                                    styles.modalTitle
                                 }
-                                onClick={submitAction}
                             >
-                                Submit
-                            </button>
+                                {
+
+                                    actionType ===
+                                    "APPROVE"
+
+                                        ?
+
+                                        "Approve Leave"
+
+                                        :
+
+                                        "Reject Leave"
+                                }
+                            </h2>
+
+                            <textarea
+                                style={
+                                    styles.textarea
+                                }
+                                placeholder="Enter Manager Comment..."
+                                value={managerComment}
+                                onChange={(e) =>
+                                    setManagerComment(
+                                        e.target.value
+                                    )
+                                }
+                            />
+
+                            <div
+                                style={
+                                    styles.modalButtons
+                                }
+                            >
+
+                                <button
+                                    style={
+                                        styles.cancelButton
+                                    }
+                                    onClick={() =>
+                                        setShowModal(
+                                            false
+                                        )
+                                    }
+                                >
+                                    Cancel
+                                </button>
+
+                                <button
+                                    style={
+                                        actionType ===
+                                        "APPROVE"
+
+                                            ?
+
+                                            styles.approveButton
+
+                                            :
+
+                                            styles.rejectButton
+                                    }
+                                    onClick={
+                                        submitAction
+                                    }
+                                >
+                                    Submit
+                                </button>
+
+                            </div>
 
                         </div>
 
                     </div>
 
-                </div>
-
-            )}
+                )
+            }
 
         </div>
     );
@@ -252,96 +358,226 @@ function PendingLeaves() {
 const styles = {
 
     page: {
+
         minHeight: "100vh",
+
+        padding: "30px",
+
         background:
-            "linear-gradient(135deg,#0f4cdb,#5a3fff,#8f3bff)",
-        padding: "30px"
+            "linear-gradient(135deg,#0f4cdb,#5a3fff,#8f3bff)"
     },
 
-    card: {
-        background: "white",
-        borderRadius: "20px",
-        padding: "25px"
+    container: {
+
+        backgroundColor: "white",
+
+        borderRadius: "25px",
+
+        padding: "30px",
+
+        boxShadow:
+            "0px 12px 35px rgba(0,0,0,0.2)"
     },
 
     heading: {
-        marginBottom: "20px"
+
+        fontSize: "40px",
+
+        color: "#0f172a",
+
+        marginBottom: "25px",
+
+        fontWeight: "700"
+    },
+
+    tableContainer: {
+
+        overflowX: "auto"
     },
 
     table: {
+
         width: "100%",
+
         borderCollapse: "collapse"
     },
 
-    approve: {
-        background: "#16a34a",
-        color: "white",
-        border: "none",
-        padding: "10px 15px",
-        borderRadius: "8px",
-        cursor: "pointer",
-        marginRight: "10px"
-    },
+    th: {
 
-    reject: {
-        background: "#dc2626",
-        color: "white",
-        border: "none",
-        padding: "10px 15px",
-        borderRadius: "8px",
-        cursor: "pointer"
-    },
-
-    back: {
-        marginTop: "20px",
-        padding: "12px 20px",
-        border: "none",
-        borderRadius: "8px",
         background:
             "linear-gradient(90deg,#2563eb,#7c3aed)",
+
         color: "white",
-        cursor: "pointer"
+
+        padding: "16px",
+
+        textAlign: "center",
+
+        fontSize: "16px"
+    },
+
+    td: {
+
+        padding: "16px",
+
+        textAlign: "center",
+
+        borderBottom:
+            "1px solid #e5e7eb"
+    },
+
+    row: {
+
+        transition: "0.3s"
+    },
+
+    approveButton: {
+
+        backgroundColor: "#16a34a",
+
+        color: "white",
+
+        border: "none",
+
+        padding: "10px 18px",
+
+        borderRadius: "8px",
+
+        cursor: "pointer",
+
+        marginRight: "10px",
+
+        fontWeight: "600"
+    },
+
+    rejectButton: {
+
+        backgroundColor: "#dc2626",
+
+        color: "white",
+
+        border: "none",
+
+        padding: "10px 18px",
+
+        borderRadius: "8px",
+
+        cursor: "pointer",
+
+        fontWeight: "600"
+    },
+
+    backButton: {
+
+        marginTop: "25px",
+
+        padding: "14px 25px",
+
+        border: "none",
+
+        borderRadius: "10px",
+
+        background:
+            "linear-gradient(90deg,#2563eb,#7c3aed)",
+
+        color: "white",
+
+        fontSize: "16px",
+
+        cursor: "pointer",
+
+        fontWeight: "600"
+    },
+
+    noData: {
+
+        textAlign: "center",
+
+        padding: "25px",
+
+        fontWeight: "600"
     },
 
     modalOverlay: {
+
         position: "fixed",
+
         top: 0,
+
         left: 0,
+
         width: "100%",
+
         height: "100%",
-        background: "rgba(0,0,0,0.5)",
+
+        background:
+            "rgba(0,0,0,0.5)",
+
         display: "flex",
+
         justifyContent: "center",
+
         alignItems: "center"
     },
 
     modal: {
+
         width: "450px",
-        background: "white",
-        borderRadius: "15px",
+
+        backgroundColor: "white",
+
+        borderRadius: "20px",
+
         padding: "25px"
     },
 
+    modalTitle: {
+
+        marginBottom: "15px"
+    },
+
     textarea: {
+
         width: "100%",
+
         height: "120px",
-        padding: "10px",
-        marginTop: "15px",
-        marginBottom: "15px",
+
+        padding: "12px",
+
+        borderRadius: "10px",
+
+        border:
+            "1px solid #d1d5db",
+
+        resize: "none",
+
         boxSizing: "border-box"
     },
 
     modalButtons: {
+
         display: "flex",
+
         justifyContent: "flex-end",
-        gap: "10px"
+
+        gap: "10px",
+
+        marginTop: "15px"
     },
 
-    cancelBtn: {
+    cancelButton: {
+
         padding: "10px 15px",
+
         border: "none",
+
         borderRadius: "8px",
-        cursor: "pointer"
+
+        cursor: "pointer",
+
+        backgroundColor: "#94a3b8",
+
+        color: "white"
     }
 };
 
