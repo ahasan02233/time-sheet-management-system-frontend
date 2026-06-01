@@ -25,8 +25,19 @@ function EmployeeDashboard() {
                     TimeSheet Management System
                 </h1>
 
-                <div style={styles.userBox}>
-                    👤 {employeeName}
+                <div style={styles.userSection}>
+
+                    <div style={styles.userBox}>
+                        👤 {employeeName}
+                    </div>
+
+                    <button
+                        style={styles.smallLogoutButton}
+                        onClick={logout}
+                    >
+                        Logout
+                    </button>
+
                 </div>
 
             </div>
@@ -38,7 +49,7 @@ function EmployeeDashboard() {
                 </h1>
 
                 <p>
-                    Manage your daily work and timesheets efficiently.
+                    Manage your daily work, timesheets and leave requests efficiently.
                 </p>
 
             </div>
@@ -98,22 +109,24 @@ function EmployeeDashboard() {
                 <div style={styles.card}>
 
                     <div style={styles.icon}>
-                        🚪
+                        🏖️
                     </div>
 
                     <h2>
-                        Logout
+                        Leave Management
                     </h2>
 
                     <p>
-                        Sign out from the application.
+                        Apply leave and track leave approval status.
                     </p>
 
                     <button
-                        style={styles.logoutButton}
-                        onClick={logout}
+                        style={styles.primaryButton}
+                        onClick={() =>
+                            navigate("/leave-management")
+                        }
                     >
-                        Logout
+                        Manage Leave
                     </button>
 
                 </div>
@@ -128,9 +141,7 @@ const styles = {
 
     container: {
 
-        height: "100vh",
-
-        overflow: "hidden",
+        minHeight: "100vh",
 
         padding: "20px 40px",
 
@@ -158,6 +169,15 @@ const styles = {
         fontWeight: "700"
     },
 
+    userSection: {
+
+        display: "flex",
+
+        alignItems: "center",
+
+        gap: "12px"
+    },
+
     userBox: {
 
         backgroundColor:
@@ -174,6 +194,24 @@ const styles = {
         backdropFilter: "blur(10px)"
     },
 
+    smallLogoutButton: {
+
+        background:
+            "linear-gradient(90deg,#ef4444,#dc2626)",
+
+        color: "white",
+
+        border: "none",
+
+        padding: "12px 18px",
+
+        borderRadius: "10px",
+
+        cursor: "pointer",
+
+        fontWeight: "bold"
+    },
+
     welcomeCard: {
 
         backgroundColor: "white",
@@ -182,7 +220,7 @@ const styles = {
 
         padding: "25px",
 
-        marginBottom: "20px",
+        marginBottom: "25px",
 
         boxShadow:
             "0px 10px 30px rgba(0,0,0,0.15)"
@@ -195,7 +233,7 @@ const styles = {
         gridTemplateColumns:
             "repeat(3, 1fr)",
 
-        gap: "20px"
+        gap: "25px"
     },
 
     card: {
@@ -204,7 +242,7 @@ const styles = {
 
         borderRadius: "20px",
 
-        padding: "20px",
+        padding: "25px",
 
         textAlign: "center",
 
@@ -214,9 +252,9 @@ const styles = {
 
     icon: {
 
-        fontSize: "40px",
+        fontSize: "50px",
 
-        marginBottom: "10px"
+        marginBottom: "15px"
     },
 
     primaryButton: {
@@ -238,29 +276,9 @@ const styles = {
 
         cursor: "pointer",
 
-        fontSize: "16px"
-    },
+        fontSize: "16px",
 
-    logoutButton: {
-
-        width: "100%",
-
-        marginTop: "20px",
-
-        background:
-            "linear-gradient(90deg,#ef4444,#dc2626)",
-
-        color: "white",
-
-        border: "none",
-
-        padding: "14px",
-
-        borderRadius: "12px",
-
-        cursor: "pointer",
-
-        fontSize: "16px"
+        fontWeight: "600"
     }
 };
 
